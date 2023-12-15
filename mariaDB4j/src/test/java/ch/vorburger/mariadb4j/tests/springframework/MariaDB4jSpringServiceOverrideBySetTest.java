@@ -54,6 +54,7 @@ public class MariaDB4jSpringServiceOverrideBySetTest {
 
     @Test public void testOverrideBySet() {
         assertEquals(5677, s.getConfiguration().getPort());
+        System.out.println(s.getConfiguration().getBaseDir());
         assertEquals("target/MariaDB4jSpringServiceOverrideBySetTest/baseDir", s.getConfiguration().getBaseDir());
         assertEquals("target/MariaDB4jSpringServiceOverrideBySetTest/baseDir/libs", s.getConfiguration().getLibDir());
         assertEquals("target/MariaDB4jSpringServiceOverrideBySetTest/dataDir", s.getConfiguration().getDataDir());

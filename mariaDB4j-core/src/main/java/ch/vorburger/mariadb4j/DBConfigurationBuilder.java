@@ -19,6 +19,7 @@
  */
 package ch.vorburger.mariadb4j;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class DBConfigurationBuilder {
     // all these are just some defaults
     protected String osDirectoryName = SystemUtils.IS_OS_WINDOWS ? WIN32
             : SystemUtils.IS_OS_MAC ? OSX : LINUX;
-    protected String baseDir = SystemUtils.JAVA_IO_TMPDIR + "/MariaDB4j/base";
+    protected String baseDir = "/MariaDB4j/base";
     protected String libDir = null;
 
     protected String dataDir = DEFAULT_DATA_DIR;
@@ -53,11 +54,20 @@ public class DBConfigurationBuilder {
 
     private boolean frozen = false;
 
+    private String path() {
+        return SystemUtils.JAVA_IO_TMPDIR + this.hashCode() + File.separator;
+    }
+
     public static DBConfigurationBuilder newBuilder() {
         return new DBConfigurationBuilder();
     }
 
-    protected DBConfigurationBuilder() {}
+    protected DBConfigurationBuilder() {
+        String p = path();
+
+        this.baseDir = p + this.baseDir;
+        this.dataDir = p + this.dataDir;
+    }
 
     protected void checkIfFrozen(String setterName) {
         if (frozen)
@@ -149,10 +159,13 @@ public class DBConfigurationBuilder {
     }
 
     protected String _getDataDir() {
-        if (isNull(getDataDir()) || getDataDir().equals(DEFAULT_DATA_DIR))
-            return DEFAULT_DATA_DIR + SystemUtils.FILE_SEPARATOR + getPort();
-        else
-            return getDataDir();
+        String dir = path() + DEFAULT_DATA_DIR;
+
+        if (isNull(getDataDir()) || getDataDir().equals(dir)) {
+            return dir + File.separator + getPort();
+        }
+
+        return getDataDir();
     }
 
     protected boolean isNull(String string) {
@@ -180,7 +193,7 @@ public class DBConfigurationBuilder {
             String portStr = String.valueOf(getPort());
             // Use /tmp instead getBaseDir() here, else we too easily hit
             // the "mysqld ERROR The socket file path is too long (> 107)" issue
-            socket = SystemUtils.JAVA_IO_TMPDIR + "/MariaDB4j." + portStr + ".sock";
+            socket = path() + "/MariaDB4j." + portStr + ".sock";
         }
         return socket;
     }
