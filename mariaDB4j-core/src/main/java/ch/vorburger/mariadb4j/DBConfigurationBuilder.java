@@ -36,7 +36,7 @@ public class DBConfigurationBuilder {
     protected static final String LINUX = "linux";
     protected static final String OSX = "osx";
 
-    private static final String DEFAULT_DATA_DIR = SystemUtils.JAVA_IO_TMPDIR + "/MariaDB4j/data";
+    private static final String DEFAULT_DATA_DIR = "/MariaDB4j/data";
 
     private String databaseVersion = null;
 
